@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="../css/global.css">
+  <title>投影转换</title>
+  <script src="../dist/ol/include-ol.js"></script>
+  <script>
+    function init() {
+      //定义坐标系
+      proj4.defs("EPSG:3395", "+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs");
+      ol.proj.proj4.register(proj4);
+      var resolutions = getResolutions(0, 0.000000028774, 0, 10);
+      var projection = ol.proj.get('EPSG:3395');
+      projection.setExtent([-20026376.39, -15496570.74, 20026376.39, 18764656.23])
+      var template = '经度：{x} 纬度：{y}';
+      var map = new ol.Map({
+        controls: ol.control.defaults({zoom: true, attribution: false}).extend([
+          new ol.control.ScaleLine(),
+          new ol.control.MousePosition({
+            coordinateFormat: function (coordinate) {
+              return ol.coordinate.format(coordinate, '经度:{x} 纬度:{y}', 4);
+            },
+            projection: 'EPSG:4326',
+            className: 'custom-mouse-position',
+            target: document.getElementById('mouse-position'),
+            undefinedHTML: '&nbsp'
+          })
+        ]),
+        target: 'map',
+        view: new ol.View({
+          center: [11609969.27, 3896311.62],
+          zoom: 0,
+          projection: projection,
+          resolutions: resolutions
+        })
+      });
+      var url = 'http://localhost:8090/iserver/services/map-kh_L2/rest/maps/China_Province3395@kh_L2';
+      var layer = new ol.layer.Tile({
+        source: new ol.source.TileSuperMapRest({
+          url: url,
+          //手动构建自定义目标的TileGrid
+          tileGrid: new ol.tilegrid.TileGrid({
+            extent: [8182092.31, 705312.23, 15037846.24, 7087311.0],
+            resolutions: resolutions
+          }),
+          wrapX: true
+        }),
+        projection: projection
+      });
+      map.addLayer(layer);
+      var extent = ol.extent.boundingExtent([
+        ol.proj.transform([40.36, 7.66], 'EPSG:4326', 'EPSG:3395'),//左下
+        ol.proj.transform([167.85, 56.91], 'EPSG:4326', 'EPSG:3395')//右上
+      ]);
+      map.getView().fit(extent, map.getSize());
+      var pointCoord = ol.proj.transform([100.33, 32.280000018770551], 'EPSG:4326', 'EPSG:3395');
+    }
+
+    function getResolutions(zoom, scale, targetMinZoom, targetMaxZoom) {
+      var res = scaleToResolution(scale);
+      var minRes = res * Math.pow(2, zoom - targetMinZoom);
+      var resolutions = [];
+      for (let index = 0; index < targetMaxZoom - targetMinZoom + 1; index++) {
+        resolutions.push(minRes / Math.pow(2, index));
+      }
+      return resolutions;
+    }
+
+    function scaleToResolution(scale) {
+      var inchPerMeter = 1 / 0.0254;
+      return 1 / (scale * 96 * inchPerMeter);
+    }
+  </script>
+</head>
+<body onload="init()">
+<div id="map"></div>
+<div id="mouse-position"></div>
+</body>
+</html>

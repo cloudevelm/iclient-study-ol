@@ -2,9 +2,51 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Title</title>
+  <link rel="stylesheet" type="text/css" href="../css/global.css">
+  <script src="../dist/ol/include-ol.js"></script>
+  <title>加载3857地图</title>
+  <script>
+    function init() {
+        var map = new ol.Map({
+          controls: ol.control.defaults({ zoom: true, attribution: false }).extend([
+            new ol.control.ScaleLine(),
+            new ol.control.MousePosition({
+              coordinateFormat: function (coordinate) {
+                return ol.coordinate.format(coordinate, '经度:{x} 纬度:{y}', 4);
+              },
+              projection: 'EPSG:4326',
+              className: 'custom-mouse-position',
+              target: document.getElementById('mouse-position'),
+              undefinedHTML: '&nbsp'
+            })
+          ]),
+          target: 'map',
+          view: new ol.View({
+            center: [11525642.33, 3908712.64],
+            zoom: 2,
+            projection: 'EPSG:3857',
+            multiWorld: true
+          })
+        });
+        var url = "http://localhost:8090/iserver/services/map-kh_L2/rest/maps/China_Province_3857@kh_L2";
+        var layer = new ol.layer.Tile({
+          source: new ol.source.TileSuperMapRest({
+            url: url,
+            wrapX: true
+          }),
+          projection: 'EPSG:3857'
+        });
+        map.addLayer(layer);
+        var extent = ol.extent.boundingExtent([
+          [8182092.31, 705312.23],//左下
+          [15037846.24, 7087311.0] //右上
+        ]);
+        map.getView().fit(extent, map.getSize())
+      }
+  </script>
 </head>
-<body>
-
+<body onload="init()">
+<div id="map"></div>
+<div id="mouse-position"></div>
 </body>
 </html>

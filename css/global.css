@@ -7,3 +7,21 @@ html, body {
   height: 100%;
   width: 100%;
 }
+#mouse-position {
+  /* background: rgba(0,60,136,.3);
+  border-radius: 4px; */
+  position: absolute;
+  bottom: 8px;
+  right: 20px;
+  width: 300px;
+  height: 20px;
+  /* 将z-index设置为显示在地图上层 */
+  z-index: 2000;
+}
+ /* 显示鼠标信息的自定义样式设置 */
+.custom-mouse-position {
+  color: rebeccapurple;
+  font-size: 16px;
+  font-family: "微软雅黑";
+  text-align: right;
+}
