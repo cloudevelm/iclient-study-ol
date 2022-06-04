@@ -54,7 +54,37 @@
         ol.proj.transform([167.85, 56.91], 'EPSG:4326', 'EPSG:3395')//右上
       ]);
       map.getView().fit(extent, map.getSize());
-      var pointCoord = ol.proj.transform([100.33, 32.280000018770551], 'EPSG:4326', 'EPSG:3395');
+      map.addLayer(getPointLayer())
+    }
+
+    function getPointLayer() {
+      var pointProj = ol.proj.transform([100.33, 32.280000018770551], 'EPSG:4326', 'EPSG:3395');
+      var point = new ol.geom.Point(pointProj);
+      var feature = new ol.Feature({
+        geometry: point,
+        name: 'Point'
+      });
+      var pointSource = new ol.source.Vector({
+        features: [feature]
+      })
+      return new ol.layer.Vector({
+        source: pointSource,
+        style: new ol.style.Style({
+          image: new ol.style.Icon({
+            anchor: [0.5, 1],
+            src: '../img/mark.png'
+          }),
+          // 设置图片下面显示字体的样式和内容
+          text: new ol.style.Text({
+            text: '文字描述',// 添加文字描述
+            font: '14px font-size', // 设置字体大小
+            fill: new ol.style.Fill({// 设置字体颜色
+              color: '#1CAF9A'
+            }),
+            offsetY: 10// 设置文字偏移量
+          })
+        })
+      })
     }
 
     function getResolutions(zoom, scale, targetMinZoom, targetMaxZoom) {
