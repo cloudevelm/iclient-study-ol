@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <link rel="stylesheet" type="text/css" href="../css/global.css">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../css/global.css">
   <script src="../dist/ol/include-ol.js"></script>
-  <title>加载4326地图</title>
   <script>
     function onLoad() {
       var map = new ol.Map({
-        controls: ol.control.defaults({ zoom: true, attribution: false }).extend([
+        controls: ol.control.defaults({zoom: true, attribution: false}).extend([
           new ol.control.ScaleLine(),
           new ol.control.MousePosition({
             coordinateFormat: function (coordinate) {
@@ -27,23 +28,10 @@
           projection: 'EPSG:4326',
           multiWorld: true
         })
-      });
-      var url = "http://localhost:8090/iserver/services/map-kh_L2/rest/maps/China_Province_4326@kh_L2";
-      var layer = new ol.layer.Tile({
-        source: new ol.source.TileSuperMapRest({
-          url: url,
-          wrapX: true
-        }),
-        projection: 'EPSG:4326'
-      });
-      map.addLayer(layer);
-      var extent = ol.extent.boundingExtent([
-        [55.65, 13.05],//左下
-        [152.88, 59.99] //右上
-      ]);
-      map.getView().fit(extent, map.getSize());
+      })
     }
   </script>
+  <title>图层编辑</title>
 </head>
 <body onload="onLoad()">
 <div id="map"></div>

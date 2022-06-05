@@ -6,7 +6,7 @@
   <title>投影转换</title>
   <script src="../dist/ol/include-ol.js"></script>
   <script>
-    function init() {
+    function onLoad() {
       //定义坐标系
       proj4.defs("EPSG:3395", "+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs");
       ol.proj.proj4.register(proj4);
@@ -103,7 +103,7 @@
     }
   </script>
 </head>
-<body onload="init()">
+<body onload="onLoad()">
 <div id="map"></div>
 <div id="mouse-position"></div>
 </body>

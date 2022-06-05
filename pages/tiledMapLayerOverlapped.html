@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <link rel="stylesheet" type="text/css" href="../css/global.css">
+  <link rel="stylesheet" href="../css/global.css">
   <script src="../dist/ol/include-ol.js"></script>
-  <title>加载4326地图</title>
+  <title>地图叠加</title>
   <script>
     function onLoad() {
       var map = new ol.Map({
@@ -28,18 +28,28 @@
           multiWorld: true
         })
       });
-      var url = "http://localhost:8090/iserver/services/map-kh_L2/rest/maps/China_Province_4326@kh_L2";
-      var layer = new ol.layer.Tile({
+      var baseUrl = "http://localhost:8090/iserver/services/map-kh_L2/rest/maps/China_Province_4326@kh_L2";
+      var baseLayer = new ol.layer.Tile({
         source: new ol.source.TileSuperMapRest({
-          url: url,
+          url: baseUrl,
           wrapX: true
         }),
         projection: 'EPSG:4326'
       });
-      map.addLayer(layer);
+      map.addLayer(baseLayer);
+      var forestUrl = "http://localhost:8090/iserver/services/map-kh_L2/rest/maps/forest@kh_L2";
+      var forestLayer = new ol.layer.Tile({
+        source: new ol.source.TileSuperMapRest({
+          url: forestUrl,
+          wrapX: true
+        }),
+        projection: 'EPSG:4326'
+      })
+      map.addLayer(forestLayer)
+      baseLayer.setOpacity(0.5)
       var extent = ol.extent.boundingExtent([
-        [55.65, 13.05],//左下
-        [152.88, 59.99] //右上
+        [115.44 , 38.57],//左下
+        [118.07 , 41.04 ] //右上
       ]);
       map.getView().fit(extent, map.getSize());
     }
